@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linfeng.simpleforum.dao.ActivityMapper">
+    <resultMap id="ResMap" type="Activity">
+        <result column="activity_id" property="activityId"/>
+        <result column="user_id" property="userId"/>
+        <result column="activity_heat" property="activityHeat"/>
+        <result column="activity_date" property="activityDate"/>
+    </resultMap>
+
+
+    <insert id="insertActivity" parameterType="Activity">
+        INSERT INTO tb_activity
+            (activity_id, user_id, activity_heat, activity_date)
+        VALUES (#{activityId}, #{userId}, #{activityHeat}, #{activityDate})
+    </insert>
+
+    <select id="listActivitiesByUserId" parameterType="String" resultType="Activity" resultMap="ResMap">
+        SELECT *
+        FROM tb_activity
+        WHERE user_id = #{userId}
+        ORDER BY activity_date
+    </select>
+
+    <select id="countActivityByActivityDate" resultType="Integer">
+        SELECT COUNT(*)
+        FROM tb_activity
+        WHERE user_id = #{userId}
+        AND activity_date = #{activityDate}
+    </select>
+
+<!--    计算月平均热度-->
+    <select id="getMonthAverageHeat" resultType="Integer">
+        SELECT AVG(activity_heat) FROM tb_activity
+        WHERE activity_date = #{activityDate}
+    </select>
+
+    <update id="updateActivityHeat">
+        UPDATE tb_activity
+        SET activity_heat = activity_heat + #{changeNum}
+        WHERE user_id = #{userId}
+          AND activity_date = #{activityDate}
+    </update>
+
+</mapper>

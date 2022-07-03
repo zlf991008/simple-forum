@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linfeng.simpleforum.dao.UserMapper">
+
+    <resultMap id="ResMap" type="User">
+        <result column="user_id" property="userId"/>
+        <result column="user_email" property="email"/>
+        <result column="user_name" property="name"/>
+        <result column="user_password" property="password"/>
+        <result column="user_avatar" property="avatar"/>
+        <result column="last_login_time" property="lastLoginTime"/>
+        <result column="register_time" property="registerTime"/>
+    </resultMap>
+
+    <!--    增加一个用户-->
+    <insert id="insertUser" parameterType="User">
+        INSERT INTO tb_user
+        (user_id, user_email, user_name, user_password, user_avatar, register_time)
+        VALUES (#{userId}, #{email}, #{name}, #{password}, #{avatar}, #{registerTime})
+    </insert>
+
+    <!--    通过 ID 删除一个用户-->
+    <delete id="deleteByUserId" parameterType="String">
+        DELETE
+        FROM tb_user
+        WHERE user_id = #{userId}
+    </delete>
+
+    <!--    修改一个用户-->
+    <update id="updateUser" parameterType="User">
+        UPDATE tb_user
+        SET user_email    = #{email},
+            user_name     = #{name},
+            user_password = #{password},
+            user_avatar   = #{avatar}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateUserAvatar" parameterType="String">
+        UPDATE tb_user
+        SET user_avatar = #{avatar}
+        WHERE user_id = #{userId}
+    </update>
+
+    <!--    修改最近一次登录时间-->
+    <update id="updateLastLoginTimeByEmail">
+        UPDATE tb_user
+        SET last_login_time = #{lastLoginTime}
+        WHERE user_email = #{email}
+    </update>
+
+    <!--    通过 ID 查询一个用户-->
+    <select id="getUserByUserId" parameterType="String" resultType="User" resultMap="ResMap">
+        SELECT *
+        FROM tb_user
+        WHERE user_id = #{userId}
+    </select>
+
+    <!--通过 邮箱 查询一个用户-->
+    <select id="getUserByEmail" parameterType="String" resultType="User" resultMap="ResMap">
+        SELECT *
+        FROM tb_user
+        WHERE user_email = #{email}
+    </select>
+
+    <!--通过 邮箱 查询用户密码-->
+    <select id="getPasswordByEmail" parameterType="String" resultType="String">
+        SELECT user_password
+        FROM tb_user
+        WHERE user_email = #{email}
+    </select>
+
+    <!--    通过 邮箱 获取用户ID-->
+    <select id="getIdByEmail" parameterType="String" resultType="String">
+        SELECT user_id
+        FROM tb_user
+        WHERE user_email = #{email}
+    </select>
+
+    <!--    查询 邮箱 是否已注册-->
+    <select id="countUserByEmail" parameterType="String" resultType="Int">
+        SELECT COUNT(*)
+        FROM tb_user
+        WHERE user_email = #{email}
+    </select>
+
+    <!--    查询所有用户-->
+    <select id="listUsers" resultType="User" resultMap="ResMap">
+        SELECT *
+        FROM tb_user
+    </select>
+</mapper>

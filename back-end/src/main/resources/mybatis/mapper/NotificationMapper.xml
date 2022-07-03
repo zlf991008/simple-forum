@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linfeng.simpleforum.dao.NotificationMapper">
+    <resultMap id="ResMap" type="Notification">
+        <result column="notification_id" property="notificationId"/>
+        <result column="notification_title" property="title"/>
+        <result column="notification_content" property="content"/>
+        <result column="notification_avatar" property="avatar"/>
+        <result column="notification_type" property="type"/>
+        <result column="notification_create_time" property="createTime"/>
+        <result column="notification_is_un_read" property="isUnRead"/>
+        <result column="notification_to_user_id" property="toUserId"/>
+        <result column="notification_user_id" property="userId"/>
+    </resultMap>
+
+    <insert id="insertNotification" parameterType="Notification">
+        INSERT INTO tb_notification
+        (notification_id, notification_title, notification_content, notification_avatar, notification_type, notification_create_time, notification_to_user_id, notification_user_id)
+        VALUES (#{notificationId}, #{title}, #{content}, #{avatar}, #{type}, #{createTime}, #{toUserId}, #{userId})
+    </insert>
+
+    <update id="updateNotification">
+        UPDATE tb_notification
+        SET notification_is_un_read = 0
+        WHERE notification_to_user_id = #{userId}
+    </update>
+    
+    <select id="listNotificationsByUserId" parameterType="String" resultMap="ResMap">
+        SELECT * FROM tb_notification
+        WHERE notification_to_user_id = #{userId}
+        ORDER BY notification_create_time DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,9 @@
+navigate("/home", {
+  state: {
+    user: user,
+  },
+  replace: true,
+});
+
+const location = useLocation();
+const { pathname, state } = location;

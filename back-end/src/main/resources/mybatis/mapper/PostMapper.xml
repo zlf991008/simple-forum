@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linfeng.simpleforum.dao.PostMapper">
+    <resultMap id="ResMap" type="Post">
+        <result column="post_id" property="postId"/>
+        <result column="post_title" property="title"/>
+        <result column="post_type" property="type"/>
+        <result column="post_content" property="content"/>
+        <result column="post_heat" property="heat"/>
+        <result column="post_cover" property="cover"/>
+        <result column="post_create_time" property="postCreateTime"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="name"/>
+        <result column="user_email" property="email"/>
+        <result column="user_avatar" property="avatar"/>
+    </resultMap>
+
+    <!--    增加一个帖子-->
+    <insert id="insertPost" parameterType="Post">
+        INSERT INTO tb_post
+        (post_id, post_title, post_type, post_content, post_cover, post_create_time, user_id)
+        VALUES (#{postId}, #{title}, #{type}, #{content}, #{cover}, #{postCreateTime}, #{userId})
+    </insert>
+
+    <update id="updatePostByPostId" parameterType="Post">
+        UPDATE tb_post
+        SET post_title   = #{title},
+            post_type    = #{type},
+            post_content = #{content}
+        WHERE post_id = #{postId}
+    </update>
+
+    <delete id="deletePostByPostId" parameterType="String">
+        DELETE FROM tb_post
+        WHERE post_id = #{postId}
+    </delete>
+
+    <update id="updateHeatByPostId">
+        UPDATE tb_post
+        SET post_heat = post_heat + #{changeNum}
+        WHERE post_id = #{postId}
+    </update>
+
+    <!--    查询所有帖子-->
+    <!--    order by heat desc -->
+    <select id="listPostsAllByHeat" resultType="Post" resultMap="ResMap">
+        SELECT p.*, u.*
+        FROM tb_post AS p,
+             tb_user AS u
+        WHERE p.user_id = u.user_id
+        ORDER BY p.post_heat DESC
+    </select>
+
+    <!--     查询所有帖子-->
+    <!--    order by latest -->
+    <select id="listPostsAllByLatest" resultType="Post" resultMap="ResMap">
+        SELECT p.*, u.*
+        FROM tb_post AS p,
+             tb_user AS u
+        WHERE p.user_id = u.user_id
+        ORDER BY p.post_create_time DESC
+    </select>
+
+    <!--     查询所有帖子-->
+    <!--    order by oldest -->
+    <select id="listPostsAllByOldest" resultMap="ResMap">
+        SELECT p.*, u.*
+        FROM tb_post AS p,
+             tb_user AS u
+        WHERE p.user_id = u.user_id
+        ORDER BY p.post_create_time
+    </select>
+
+    <!--    通过 用户Id 查询所有的帖子-->
+    <select id="listPostsByUserId" parameterType="String" resultType="Post" resultMap="ResMap">
+        SELECT *
+        FROM tb_post
+        WHERE user_id = #{userId}
+    </select>
+
+    <!--    hot list 所用接口-->
+    <select id="listPostsByTime" parameterType="String" resultMap="ResMap">
+        SELECT p.*, u.user_name, u.user_avatar, u.user_Id, u.user_email
+        FROM tb_post AS p,
+              tb_user AS u
+        WHERE p.post_create_time LIKE '%${postCreateTime}%' AND p.user_id = u.user_id
+        GROUP BY p.post_id, p.post_heat
+        ORDER BY p.post_heat DESC
+        LIMIT 7
+    </select>
+
+</mapper>

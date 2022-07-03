@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linfeng.simpleforum.dao.LikeMapper">
+    <resultMap id="ResMap" type="Like">
+
+        <result column="like_id" property="likeId"/>
+        <result column="user_id" property="userId"/>
+        <result column="post_id" property="postId"/>
+    </resultMap>
+
+    <!--    点赞-->
+    <select id="insertLike" parameterType="Like" resultType="Integer">
+        INSERT INTO tb_like
+            (like_id, user_id, post_id)
+        VALUES (#{likeId}, #{userId}, #{postId})
+    </select>
+
+    <!--    取消点赞-->
+    <delete id="deleteLike" parameterType="String">
+        DELETE
+        FROM tb_like
+        WHERE user_id = #{userId}
+          AND post_id = #{postId}
+    </delete>
+
+    <!--    用户是否点赞此帖子-->
+    <select id="getLikeExistence" parameterType="String" resultType="Integer">
+        SELECT COUNT(*)
+        FROM tb_like
+        WHERE user_id = #{userId}
+          AND post_id = #{postId}
+    </select>
+
+    <!--    帖子的点赞总数-->
+    <select id="countLikesCountByPostId" parameterType="String" resultType="Integer">
+        SELECT COUNT(*)
+        FROM tb_like
+        WHERE post_id = #{postId}
+    </select>
+
+</mapper>

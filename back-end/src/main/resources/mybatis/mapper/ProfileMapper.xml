@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linfeng.simpleforum.dao.ProfileMapper">
+    <resultMap id="ResMap" type="Profile">
+        <result column="user_id" property="userId"/>
+        <result column="university" property="university"/>
+        <result column="college" property="college"/>
+        <result column="major" property="major"/>
+        <result column="good_at" property="goodAt"/>
+    </resultMap>
+
+    <insert id="insertProfile" parameterType="Profile">
+        INSERT INTO tb_profile
+        (user_id, university, college, major, good_at)
+        VALUES (#{userId}, #{university}, #{college}, #{major}, #{goodAt})
+    </insert>
+
+    <update id="updateProfile" parameterType="Profile">
+        UPDATE tb_profile
+        SET university = #{university}, college = #{college}, major = #{major}, good_at = #{goodAt}
+        WHERE user_id =  #{userId}
+    </update>
+
+    <select id="getProfileByUserId" parameterType="String" resultMap="ResMap">
+        SELECT *
+        FROM tb_profile
+        WHERE user_id = #{userId}
+    </select>
+</mapper>

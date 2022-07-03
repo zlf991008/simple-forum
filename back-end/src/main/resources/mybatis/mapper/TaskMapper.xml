@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linfeng.simpleforum.dao.TaskMapper">
+    <resultMap id="ResMap" type="Task">
+        <result column="task_id" property="taskId"/>
+        <result column="task_label" property="taskLabel"/>
+        <result column="task_completed" property="completed"/>
+        <result column="user_id" property="userId"/>
+        <result column="task_create_time" property="createTime"/>
+    </resultMap>
+
+    <insert id="insertTask" parameterType="Task">
+        INSERT INTO tb_task
+        (task_id, task_label, task_completed, user_id, task_create_time)
+        VALUES (#{taskId}, #{taskLabel}, #{completed}, #{userId}, #{createTime})
+    </insert>
+
+    <delete id="deleteTask" parameterType="String">
+        DELETE FROM tb_task
+        WHERE task_id = #{taskId}
+    </delete>
+
+    <update id="updateTask" parameterType="Task">
+        UPDATE tb_task
+        SET task_label = #{taskLabel}, task_completed = #{completed}
+        WHERE task_id = #{taskId}
+    </update>
+
+    <select id="getTaskByTaskId" parameterType="String" resultMap="ResMap">
+        SELECT * FROM tb_task
+        WHERE task_id = #{taskId}
+    </select>
+
+    <select id="listTasksByUserId" parameterType="String" resultMap="ResMap">
+        SELECT * FROM tb_task
+        WHERE user_id = #{userId}
+        ORDER BY task_create_time
+    </select>
+</mapper>
